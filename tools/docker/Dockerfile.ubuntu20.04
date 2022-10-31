@@ -125,6 +125,9 @@ RUN apt-get update && aptitude install -y \
 
 # Install SGX SDK
 WORKDIR /tmp
+RUN git config --global http.proxy http://192.168.30.138:7980
+RUN git config --global https.proxy http://192.168.30.138:7980
+
 RUN git clone -b sgx_2.17.1_for_occlum https://github.com/occlum/linux-sgx && \
     mkdir /etc/init && \
     cd linux-sgx && \

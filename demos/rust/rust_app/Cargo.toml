@@ -3,9 +3,14 @@ name = "rust_app"
 version = "1.0.0"
 authors = ["He Sun <bochang.sh@antfin.com>"]
 build = "build.rs"
+edition = "2021"
 
 [dependencies]
 libc = "0.2"
+libp2p = { path = "../../../sgx"}
+lock_api = "=0.4.6"
+async-std = { version = "1.6.2", features = ["attributes"] }
+async-trait = "0.1"
 
 [build-dependencies]
 cc = "1.0"

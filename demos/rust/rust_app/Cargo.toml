@@ -8,6 +8,7 @@ edition = "2021"
 [dependencies]
 libc = "0.2"
 libp2p = { path = "../../../sgx"}
+#libp2p = { git = "https://github.com/ABMatrix/rust-libp2p", branch = "start_ping"}
 lock_api = "=0.4.6"
 async-std = { version = "1.6.2", features = ["attributes"] }
 async-trait = "0.1"

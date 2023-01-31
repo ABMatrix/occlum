@@ -6,12 +6,12 @@ on:
   pull_request_target:
     types: labeled
   schedule:
-  # Schedule to run everyday at 6PM UTC (2AM CST)
-    - cron:  '0 18 * * *'
+  # Schedule to run on Tue,Fri at 6PM UTC (2AM CST)
+    - cron:  '0 18 * * 2,5'
 
 env:
   nap_time: 60
-  repeat_times: 500  # Stress test repeat times
+  repeat_times: 250  # Stress test repeat times
 
 # Cancel previous running jobs on push or pull request
 concurrency:
@@ -21,7 +21,7 @@ concurrency:
 jobs:
   Make-test-on-ubuntu:
     timeout-minutes: 180
-    if: github.event_name == 'push' || ${{ contains(github.event.pull_request.labels.*.name, 'SGX-hardware-test-required') }}
+    if: github.event_name == 'push' || github.event_name == 'schedule' || ${{ contains(github.event.pull_request.labels.*.name, 'SGX-hardware-test-required') }}
     runs-on: ${{ matrix.self_runner }}
     strategy:
       matrix:
@@ -32,8 +32,10 @@ jobs:
       run: |
         sudo chown -R ${{ secrets.CI_ADMIN }} "${{ github.workspace }}"
 
+    - uses: AutoModality/action-clean@v1
+
     - name: Checkout code
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' || github.event_name == 'schedule'
       uses: actions/checkout@v2
       with:
         submodules: true
@@ -65,7 +67,7 @@ jobs:
 
   C_cpp_rust_golang_embedded_mode_support_test:
     timeout-minutes: 180
-    if: github.event_name == 'push' || ${{ contains(github.event.pull_request.labels.*.name, 'SGX-hardware-test-required') }}
+    if: github.event_name == 'push' || github.event_name == 'schedule' || ${{ contains(github.event.pull_request.labels.*.name, 'SGX-hardware-test-required') }}
     runs-on: ${{ matrix.self_runner }}
     strategy:
       matrix:
@@ -76,8 +78,10 @@ jobs:
       run: |
         sudo chown -R ${{ secrets.CI_ADMIN }} "${{ github.workspace }}"
 
+    - uses: AutoModality/action-clean@v1
+
     - name: Checkout code
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' || github.event_name == 'schedule'
       uses: actions/checkout@v2
       with:
         submodules: true
@@ -158,7 +162,7 @@ jobs:
 
   Java_support_test:
     timeout-minutes: 180
-    if: github.event_name == 'push' || ${{ contains(github.event.pull_request.labels.*.name, 'SGX-hardware-test-required') }}
+    if: github.event_name == 'push' || github.event_name == 'schedule' || ${{ contains(github.event.pull_request.labels.*.name, 'SGX-hardware-test-required') }}
     runs-on: ${{ matrix.self_runner }}
     strategy:
       matrix:
@@ -169,8 +173,10 @@ jobs:
       run: |
         sudo chown -R ${{ secrets.CI_ADMIN }} "${{ github.workspace }}"
 
+    - uses: AutoModality/action-clean@v1
+
     - name: Checkout code
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' || github.event_name == 'schedule'
       uses: actions/checkout@v2
       with:
         submodules: true
@@ -206,7 +212,7 @@ jobs:
 
   Bazel_test:
     timeout-minutes: 180
-    if: github.event_name == 'push' || ${{ contains(github.event.pull_request.labels.*.name, 'SGX-hardware-test-required') }}
+    if: github.event_name == 'push' || github.event_name == 'schedule' || ${{ contains(github.event.pull_request.labels.*.name, 'SGX-hardware-test-required') }}
     runs-on: ${{ matrix.self_runner }}
     strategy:
       matrix:
@@ -217,8 +223,10 @@ jobs:
       run: |
         sudo chown -R ${{ secrets.CI_ADMIN }} "${{ github.workspace }}"
 
+    - uses: AutoModality/action-clean@v1
+
     - name: Checkout code
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' || github.event_name == 'schedule'
       uses: actions/checkout@v2
       with:
         submodules: true
@@ -256,7 +264,7 @@ jobs:
 
   Fish_test:
     timeout-minutes: 180
-    if: github.event_name == 'push' || ${{ contains(github.event.pull_request.labels.*.name, 'SGX-hardware-test-required') }}
+    if: github.event_name == 'push' || github.event_name == 'schedule' || ${{ contains(github.event.pull_request.labels.*.name, 'SGX-hardware-test-required') }}
     runs-on: ${{ matrix.self_runner }}
     strategy:
       matrix:
@@ -267,8 +275,10 @@ jobs:
       run: |
         sudo chown -R ${{ secrets.CI_ADMIN }} "${{ github.workspace }}"
 
+    - uses: AutoModality/action-clean@v1
+
     - name: Checkout code
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' || github.event_name == 'schedule'
       uses: actions/checkout@v2
       with:
         submodules: true
@@ -301,7 +311,7 @@ jobs:
 
   Xgboost_test:
     timeout-minutes: 180
-    if: github.event_name == 'push' || ${{ contains(github.event.pull_request.labels.*.name, 'SGX-hardware-test-required') }}
+    if: github.event_name == 'push' || github.event_name == 'schedule' || ${{ contains(github.event.pull_request.labels.*.name, 'SGX-hardware-test-required') }}
     runs-on: ${{ matrix.self_runner }}
     strategy:
       matrix:
@@ -312,8 +322,10 @@ jobs:
       run: |
         sudo chown -R ${{ secrets.CI_ADMIN }} "${{ github.workspace }}"
 
+    - uses: AutoModality/action-clean@v1
+
     - name: Checkout code
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' || github.event_name == 'schedule'
       uses: actions/checkout@v2
       with:
         submodules: true
@@ -346,7 +358,7 @@ jobs:
 
   Sqlite_test:
     timeout-minutes: 180
-    if: github.event_name == 'push' || ${{ contains(github.event.pull_request.labels.*.name, 'SGX-hardware-test-required') }}
+    if: github.event_name == 'push' || github.event_name == 'schedule' || ${{ contains(github.event.pull_request.labels.*.name, 'SGX-hardware-test-required') }}
     runs-on: ${{ matrix.self_runner }}
     strategy:
       matrix:
@@ -357,8 +369,10 @@ jobs:
       run: |
         sudo chown -R ${{ secrets.CI_ADMIN }} "${{ github.workspace }}"
 
+    - uses: AutoModality/action-clean@v1
+
     - name: Checkout code
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' || github.event_name == 'schedule'
       uses: actions/checkout@v2
       with:
         submodules: true
@@ -388,7 +402,7 @@ jobs:
 
   Python_musl_support_test:
     timeout-minutes: 180
-    if: github.event_name == 'push' || ${{ contains(github.event.pull_request.labels.*.name, 'SGX-hardware-test-required') }}
+    if: github.event_name == 'push' || github.event_name == 'schedule' || ${{ contains(github.event.pull_request.labels.*.name, 'SGX-hardware-test-required') }}
     runs-on: ${{ matrix.self_runner }}
     strategy:
       matrix:
@@ -399,8 +413,10 @@ jobs:
       run: |
         sudo chown -R ${{ secrets.CI_ADMIN }} "${{ github.workspace }}"
 
+    - uses: AutoModality/action-clean@v1
+
     - name: Checkout code
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' || github.event_name == 'schedule'
       uses: actions/checkout@v2
       with:
         submodules: true
@@ -457,7 +473,7 @@ jobs:
 
   Openvino_test:
     timeout-minutes: 180
-    if: github.event_name == 'push' || ${{ contains(github.event.pull_request.labels.*.name, 'SGX-hardware-test-required') }}
+    if: github.event_name == 'push' || github.event_name == 'schedule' || ${{ contains(github.event.pull_request.labels.*.name, 'SGX-hardware-test-required') }}
     runs-on: ${{ matrix.self_runner }}
     strategy:
       matrix:
@@ -468,8 +484,10 @@ jobs:
       run: |
         sudo chown -R ${{ secrets.CI_ADMIN }} "${{ github.workspace }}"
 
+    - uses: AutoModality/action-clean@v1
+
     - name: Checkout code
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' || github.event_name == 'schedule'
       uses: actions/checkout@v2
       with:
         submodules: true
@@ -523,7 +541,7 @@ jobs:
 
   Grpc_test:
     timeout-minutes: 180
-    if: github.event_name == 'push' || ${{ contains(github.event.pull_request.labels.*.name, 'SGX-hardware-test-required') }}
+    if: github.event_name == 'push' || github.event_name == 'schedule' || ${{ contains(github.event.pull_request.labels.*.name, 'SGX-hardware-test-required') }}
     runs-on: ${{ matrix.self_runner }}
     strategy:
       matrix:
@@ -534,8 +552,10 @@ jobs:
       run: |
         sudo chown -R ${{ secrets.CI_ADMIN }} "${{ github.workspace }}"
 
+    - uses: AutoModality/action-clean@v1
+
     - name: Checkout code
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' || github.event_name == 'schedule'
       uses: actions/checkout@v2
       with:
         submodules: true
@@ -611,7 +631,7 @@ jobs:
 
   Gvisor_test:
     timeout-minutes: 180
-    if: github.event_name == 'push' || ${{ contains(github.event.pull_request.labels.*.name, 'SGX-hardware-test-required') }}
+    if: github.event_name == 'push' || github.event_name == 'schedule' || ${{ contains(github.event.pull_request.labels.*.name, 'SGX-hardware-test-required') }}
     runs-on: ${{ matrix.self_runner }}
     strategy:
       matrix:
@@ -622,8 +642,10 @@ jobs:
       run: |
         sudo chown -R ${{ secrets.CI_ADMIN }} "${{ github.workspace }}"
 
+    - uses: AutoModality/action-clean@v1
+
     - name: Checkout code
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' || github.event_name == 'schedule'
       uses: actions/checkout@v2
       with:
         submodules: true
@@ -717,7 +739,7 @@ jobs:
 
   Test_deb_deploy:
     timeout-minutes: 180
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' || github.event_name == 'schedule'
     runs-on: ${{ matrix.self_runner }}
     strategy:
       matrix:
@@ -728,8 +750,10 @@ jobs:
       run: |
         sudo chown -R ${{ secrets.CI_ADMIN }} "${{ github.workspace }}"
 
+    - uses: AutoModality/action-clean@v1
+
     - name: Checkout code
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' || github.event_name == 'schedule'
       uses: actions/checkout@v2
       with:
         submodules: false
@@ -756,7 +780,7 @@ jobs:
 # Tensorflow_serving requires binary tensorflow_serving PIC, here we compile tensorflow_model_server before workflow
   Tensorflow_serving_test:
     timeout-minutes: 180
-    if: github.event_name == 'push' || ${{ contains(github.event.pull_request.labels.*.name, 'SGX-hardware-test-required') }}
+    if: github.event_name == 'push' || github.event_name == 'schedule' || ${{ contains(github.event.pull_request.labels.*.name, 'SGX-hardware-test-required') }}
     runs-on: ${{ matrix.self_runner }}
     strategy:
       matrix:
@@ -768,8 +792,10 @@ jobs:
       run: |
         sudo chown -R ${{ secrets.CI_ADMIN }} "${{ github.workspace }}"
 
+    - uses: AutoModality/action-clean@v1
+
     - name: Checkout code
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' || github.event_name == 'schedule'
       uses: actions/checkout@v2
       with:
         submodules: true
@@ -834,7 +860,7 @@ jobs:
 
   Remote_attestation_test:
     timeout-minutes: 180
-    if: github.event_name == 'push' || ${{ contains(github.event.pull_request.labels.*.name, 'SGX-hardware-test-required') }}
+    if: github.event_name == 'push' || github.event_name == 'schedule' || ${{ contains(github.event.pull_request.labels.*.name, 'SGX-hardware-test-required') }}
     runs-on: ${{ matrix.self_runner }}
     strategy:
       matrix:
@@ -845,8 +871,10 @@ jobs:
       run: |
         sudo chown -R ${{ secrets.CI_ADMIN }} "${{ github.workspace }}"
 
+    - uses: AutoModality/action-clean@v1
+
     - name: Checkout code
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' || github.event_name == 'schedule'
       uses: actions/checkout@v2
       with:
         submodules: true
@@ -872,7 +900,7 @@ jobs:
 
   Init_RA_test:
     timeout-minutes: 180
-    if: github.event_name == 'push' || ${{ contains(github.event.pull_request.labels.*.name, 'SGX-hardware-test-required') }}
+    if: github.event_name == 'push' || github.event_name == 'schedule' || ${{ contains(github.event.pull_request.labels.*.name, 'SGX-hardware-test-required') }}
     runs-on: ${{ matrix.self_runner }}
     strategy:
       matrix:
@@ -883,8 +911,10 @@ jobs:
       run: |
         sudo chown -R ${{ secrets.CI_ADMIN }} "${{ github.workspace }}"
 
+    - uses: AutoModality/action-clean@v1
+
     - name: Checkout code
-      if: github.event_name == 'push'
+      if: github.event_name == 'push' || github.event_name == 'schedule'
       uses: actions/checkout@v2
       with:
         submodules: true
@@ -922,6 +952,54 @@ jobs:
       if: ${{ always() }}
       run: docker stop ${{ env.CONTAINER_NAME }}
 
+  MySQL_test:
+    timeout-minutes: 180
+    if: github.event_name == 'push' || github.event_name == 'schedule' || ${{ contains(github.event.pull_request.labels.*.name, 'SGX-hardware-test-required') }}
+    runs-on: ${{ matrix.self_runner }}
+    strategy:
+      matrix:
+        self_runner: [[self-hosted, SGX2-HW]]
+
+    steps:
+    - name: Clean before running
+      run: |
+        sudo chown -R ${{ secrets.CI_ADMIN }} "${{ github.workspace }}"
+
+    - uses: AutoModality/action-clean@v1
+
+    - name: Checkout code
+      if: github.event_name == 'push' || github.event_name == 'schedule'
+      uses: actions/checkout@v2
+      with:
+        submodules: true
+
+    - name: Checkout code from fork
+      if: ${{ contains(github.event.pull_request.labels.*.name, 'SGX-hardware-test-required') }}
+      uses: actions/checkout@v2
+      with:
+        ref: refs/pull/${{ github.event.pull_request.number }}/merge
+        submodules: true
+
+    - uses: ./.github/workflows/composite_action/hw
+      with:
+        container-name: ${{ github.job }}
+        build-envs: 'OCCLUM_RELEASE_BUILD=1'
+
+    - name: Download and build mysql
+      run: docker exec ${{ env.CONTAINER_NAME }} bash -c "cd /root/occlum/demos/mysql && ./dl_and_build_mysql.sh"
+
+    - name: Run mysql server
+      run: docker exec ${{ env.CONTAINER_NAME }} bash -c "cd /root/occlum/demos/mysql && ./run_mysql_server.sh" &
+
+    - name: Run mysql benchmarks
+      run: |
+        sleep 120;
+        docker exec ${{ env.CONTAINER_NAME }} bash -c "cd /root/occlum/demos/mysql && ./run_benchmarks.sh"
+
+    - name: Clean the environment
+      if: ${{ always() }}
+      run: docker stop ${{ env.CONTAINER_NAME }}
+
   Stress_test_with_musl:
     timeout-minutes: 360
     if: github.event_name == 'schedule'
@@ -934,6 +1012,8 @@ jobs:
     - name: Clean before running
       run: |
         sudo chown -R ${{ secrets.CI_ADMIN }} "${{ github.workspace }}"
+
+    - uses: AutoModality/action-clean@v1
 
     - name: Checkout code
       uses: actions/checkout@v2
@@ -967,6 +1047,8 @@ jobs:
     - name: Clean before running
       run: |
         sudo chown -R ${{ secrets.CI_ADMIN }} "${{ github.workspace }}"
+
+    - uses: AutoModality/action-clean@v1
 
     - name: Checkout code
       uses: actions/checkout@v2

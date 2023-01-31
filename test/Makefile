@@ -22,9 +22,12 @@ TESTS ?= env empty hello_world malloc mmap file fs_perms getpid spawn sched pipe
 	truncate readdir mkdir open stat link symlink chmod chown tls pthread system_info rlimit \
 	server server_epoll unix_socket cout hostfs cpuid rdtsc device sleep exit_group posix_flock \
 	ioctl fcntl eventfd emulate_syscall access signal sysinfo prctl rename procfs wait \
-	spawn_attribute exec statfs random umask pgrp vfork mount flock utimes shm epoll
+	spawn_attribute exec statfs random umask pgrp vfork mount flock utimes shm epoll brk
 # Benchmarks: need to be compiled and run by bench-% target
 BENCHES := spawn_and_exit_latency pipe_throughput unix_socket_throughput
+
+# Occlum bin path
+OCCLUM_BIN_PATH ?= $(BUILD_DIR)/bin
 
 # Top-level Makefile targets
 BUILD_TARGETS := $(TEST_DEPS) $(TESTS) $(BENCHES)
@@ -54,7 +57,7 @@ prebuild:
 	@$(RM) -rf $(BUILD_DIR)/test
 	@mkdir -p $(BUILD_DIR)/test
 	@cd $(BUILD_DIR)/test && \
-		$(BUILD_DIR)/bin/occlum init
+		$(OCCLUM_BIN_PATH)/occlum init
 	@cp Occlum.json $(BUILD_DIR)/test/
 
 $(BUILD_TARGETS): %:
@@ -64,7 +67,7 @@ $(BUILD_TARGETS): %:
 
 postbuild:
 	@cd $(BUILD_DIR)/test && \
-		$(BUILD_DIR)/bin/occlum build -f
+		$(OCCLUM_BIN_PATH)/occlum build -f
 
 #############################################################################
 # Test targets
@@ -87,7 +90,7 @@ test-internal: build pretest $(TEST_TARGETS) posttest
 pretest:
 	@$(RM) $(PASS_LOG) $(FAIL_LOG)
 	@cd $(BUILD_DIR)/test && \
-		$(BUILD_DIR)/bin/occlum start
+		$(OCCLUM_BIN_PATH)/occlum start
 
 # Restart server if test failed
 $(TEST_TARGETS): test-%: %
@@ -103,14 +106,14 @@ $(TEST_TARGETS): test-%: %
 			$(ECHO) "$(RED)FAILED$(NO_COLOR)" ; \
 			$(ECHO) "$< FAILED $$i" >> $(FAIL_LOG) ; \
 			cd $(BUILD_DIR)/test && \
-			$(BUILD_DIR)/bin/occlum start ; \
+			$(OCCLUM_BIN_PATH)/occlum start ; \
 			cd -; \
 		fi ; \
 	done
 
 posttest:
 	@cd $(BUILD_DIR)/test && \
-		$(BUILD_DIR)/bin/occlum stop
+		$(OCCLUM_BIN_PATH)/occlum stop
 	@PASS_NUM=$(shell wc -l < $(PASS_LOG)); \
 		FAIL_NUM=$(shell wc -l < $(FAIL_LOG)); \
 		$(ECHO) "\nTotal:" ; \

@@ -16,14 +16,14 @@ This set of demos shows how real-world apps can be easily run inside SGX enclave
 
 * [bash](bash/): A demo of [Bash](https://www.gnu.org/software/bash/) shell script.
 * [cluster_serving](cluster_serving/): A demo of [Analytics Zoo Cluster Serving](https://analytics-zoo.github.io/master/#ClusterServingGuide/ProgrammingGuide/) inference solution.
-* [fio](fio/): A demo of [Flexible I/O Tester](https://github.com/axboe/fio).
 * [fish](fish/): A demo of [FISH](https://fishshell.com) shell script.
 * [flink](flink/): A demo of [Apache Flink](https://flink.apache.org).
 * [font](font/font_support_for_java): A demo of supporting font with Java.
 * [grpc](grpc/): A client and server communicating through [gRPC](https://grpc.io), containing [glibc-supported demo](grpc/grpc_glibc) and [musl-supported demo](grpc/grpc_musl).
 * [https_server](https_server/): A HTTPS file server based on [Mongoose Embedded Web Server Library](https://github.com/cesanta/mongoose).
+* [mysql](mysql/): A demo of [MySQL](https://www.mysql.com/).
 * [openvino](openvino/) A benchmark of [OpenVINO Inference Engine](https://docs.openvinotoolkit.org/2019_R3/_docs_IE_DG_inference_engine_intro.html).
-* [pytorch](pytorch/): A demo of [PyTorch](https://pytorch.org/).
+* [pytorch](pytorch/): Demos of standalone and distributed [PyTorch](https://pytorch.org/).
 * [redis](redis/): A demo of [Redis](https://redis.io).
 * [sofaboot](sofaboot/): A demo of [SOFABoot](https://github.com/sofastack/sofa-boot), an open source Java development framework based on Spring Boot.
 * [sqlite](sqlite/) A demo of [SQLite](https://www.sqlite.org) SQL database engine.
@@ -32,6 +32,16 @@ This set of demos shows how real-world apps can be easily run inside SGX enclave
 * [tensorflow_serving](tensorflow/tensorflow_serving): A demo of [TensorFlow Serving](https://github.com/tensorflow/serving) 
 * [vault](golang/vault/): A demo of [HashiCorp Vault](https://github.com/hashicorp/vault).
 * [xgboost](xgboost/): A demo of [XGBoost](https://xgboost.readthedocs.io/en/latest).
+
+## Benchmark demos
+
+This set of demos shows how commonly used benchmarking tools can be run inside SGX enclaves with Occlum.
+
+* [fio](benchmarks/fio/): A demo of [Flexible I/O Tester](https://github.com/axboe/fio).
+* [iperf2](benchmarks/iperf2/): A demo of [Iperf2](https://sourceforge.net/projects/iperf2/), a tool for measuring Internet bandwidth performance.
+* [iperf3](benchmarks/iperf3/): A demo of [Iperf3](https://github.com/esnet/iperf), a tool for measuring Internet bandwidth performance.
+* [sysbench](benchmarks/sysbench/): A demo of [Sysbench](https://github.com/akopytov/sysbench), a scriptable multi-threaded benchmark tool for Linux.
+
 
 ## Programming language demos
 

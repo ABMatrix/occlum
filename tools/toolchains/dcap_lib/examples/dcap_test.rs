@@ -14,7 +14,7 @@ struct DcapDemo {
 }
 
 impl DcapDemo {
-    pub fn new(report_data: &str) -> Self {
+    pub fn new(report_data: Vec<u8>) -> Self {
         let mut dcap = DcapQuote::new();
         let quote_size = dcap.get_quote_size();
         let supplemental_size = dcap.get_supplemental_data_size();
@@ -23,7 +23,7 @@ impl DcapDemo {
         let mut req_data = sgx_report_data_t::default();
 
         //fill in the report data array
-        for (pos, val) in report_data.as_bytes().iter().enumerate() {
+        for (pos, val) in report_data.iter().enumerate() {
             req_data.d[pos] = *val;
         }
 
@@ -134,9 +134,9 @@ impl Drop for DcapDemo {
 
 fn main() {
     let report_str = "Dcap demo sample";
-    let mut dcap_demo = DcapDemo::new(report_str);
+    let mut dcap_demo = DcapDemo::new(report_str.as_bytes().to_vec());
 
-    println!("Generate quote with report data : {}", report_str);
+    println!("Generate quote with report data : {:?}", report_str);
     dcap_demo.dcap_quote_gen().unwrap();
 
     // compare the report data in quote buffer

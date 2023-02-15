@@ -132,6 +132,16 @@ impl Drop for DcapDemo {
     }
 }
 
+pub fn get_fingerprint() -> sgx_key_128bit_t{
+    let report_str = "GET KEY";
+    let mut dcap_demo = DcapDemo::new(report_str.as_bytes().to_vec());
+    println!("Generate quote with report data : {:?}", report_str);
+    dcap_demo.dcap_quote_gen().unwrap();
+    let report = dcap_demo.dcap_quote_get_report_body().unwrap();
+
+    get_key(report)
+}
+
 fn main() {
     let report_str = "Dcap demo sample";
     let mut dcap_demo = DcapDemo::new(report_str.as_bytes().to_vec());

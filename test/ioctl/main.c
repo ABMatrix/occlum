@@ -333,7 +333,7 @@ static int do_SGXIOC_GET_KEY(int sgx_fd) {
     if (ioctl(sgx_fd, SGXIOC_GET_KEY, &args) < 0) {
         THROW_ERROR("failed to ioctl /dev/sgx");
     }
-
+    printf("SGXIOC_GET_KEY: %ld \n",SGXIOC_GET_KEY);
     printf("key: \n");
     for (int i = 0; i < 16; i++) {
         printf("%x ", key[i]);

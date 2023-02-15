@@ -115,3 +115,81 @@ impl DcapQuote {
     }
 }
 
+const SGXIOC_GET_KEY: u64 = 3222303499;
+
+cfg_if::cfg_if! {
+    if #[cfg(target_env = "musl")] {
+        const IOCTL_GET_KEY: i32 = SGXIOC_GET_KEY as i32;
+    } else {
+        const IOCTL_GET_KEY: u64 = SGXIOC_GET_KEY;
+    }
+}
+
+#[repr(C)]
+pub struct IoctlGetKeyArg {
+    key_request: *const sgx_key_request_t, // Input
+    key: *mut sgx_key_128bit_t,            // Output
+}
+
+pub struct GETKEY {
+    fd: c_int,
+}
+
+impl GETKEY {
+    pub fn new() -> Self {
+        let path =  CString::new("/dev/sgx").unwrap();
+        let fd = unsafe { libc::open(path.as_ptr(), O_RDONLY) };
+        if fd > 0 {
+            Self {
+                fd: fd,
+            }
+        } else {
+            panic!("Open /dev/sgx failed")
+        }
+    }
+
+    pub fn get_key(&mut self, request: *const sgx_key_request_t) -> Result<sgx_key_128bit_t, &'static str> {
+        let mut key = sgx_key_128bit_t::default();
+
+        let key_args: IoctlGetKeyArg = IoctlGetKeyArg {
+            key_request: request,
+            key: &mut key
+        };
+
+        let ret = unsafe { libc::ioctl(self.fd, IOCTL_GET_KEY, &key_args) };
+        if ret < 0 {
+            Err("IOCTRL IOCTL_GET_KEY failed")
+        } else {
+            Ok( key )
+        }
+    }
+}
+
+pub fn get_key(report: *const sgx_report_body_t) -> sgx_key_128bit_t{
+    let mut get_key = GETKEY::new();
+
+    let attribute_mask = sgx_attributes_t {
+        flags: TSEAL_DEFAULT_FLAGSMASK,
+        xfrm: 0,
+    };
+    // hack the key_id
+    let key_id = sgx_key_id_t {
+        id: [1u8; SGX_KEYID_SIZE],
+    };
+    let key_policy: u16 = SGX_KEYPOLICY_MRSIGNER;
+    let mut key_request = sgx_key_request_t {
+        key_name: SGX_KEYSELECT_SEAL,
+        key_policy,
+        isv_svn: 0u16,
+        reserved1: 0u16,
+        cpu_svn: unsafe { (*report).cpu_svn },
+        attribute_mask,
+        key_id,
+        misc_mask: TSEAL_DEFAULT_MISCMASK,
+        config_svn: 0u16,
+        reserved2: [0u8; SGX_KEY_REQUEST_RESERVED2_BYTES],
+    };
+
+    let key = get_key.get_key(&mut key_request).unwrap();
+    key
+}

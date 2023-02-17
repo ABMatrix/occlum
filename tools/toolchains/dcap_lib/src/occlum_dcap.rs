@@ -115,7 +115,7 @@ impl DcapQuote {
     }
 }
 
-const SGXIOC_GET_KEY: u64 = 3222303499;
+const SGXIOC_GET_KEY: u64 = 0xc010730b; //c010730b
 
 cfg_if::cfg_if! {
     if #[cfg(target_env = "musl")] {
@@ -149,7 +149,7 @@ impl GETKEY {
     }
 
     pub fn get_key(&mut self, request: *const sgx_key_request_t) -> Result<sgx_key_128bit_t, &'static str> {
-        let mut key = sgx_key_128bit_t::default();
+        let mut key: sgx_key_128bit_t = [0u8; 16];
 
         let key_args: IoctlGetKeyArg = IoctlGetKeyArg {
             key_request: request,
@@ -174,9 +174,9 @@ pub fn get_key(report: *const sgx_report_body_t) -> sgx_key_128bit_t{
     };
     // hack the key_id
     let key_id = sgx_key_id_t {
-        id: [1u8; SGX_KEYID_SIZE],
+        id: [0u8; SGX_KEYID_SIZE],
     };
-    let key_policy: u16 = SGX_KEYPOLICY_MRSIGNER;
+    let key_policy: u16 = SGX_KEYPOLICY_MRENCLAVE;
     let mut key_request = sgx_key_request_t {
         key_name: SGX_KEYSELECT_SEAL,
         key_policy,

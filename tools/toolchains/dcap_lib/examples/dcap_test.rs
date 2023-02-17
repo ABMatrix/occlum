@@ -176,4 +176,6 @@ fn main() {
         _ => println!("Error: App: Verification completed with Terminal result: {:?}", result),
     }
 
+    let fingerprint = get_fingerprint();
+    println!("fingerprint {:?}",fingerprint);
 }

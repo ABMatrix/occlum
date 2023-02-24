@@ -7,9 +7,10 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-sgx_types = { path = "../../../deps/rust-sgx-sdk/sgx_types" }
+sgx_types = { git = "https://github.com/occlum/incubator-teaclave-sgx-sdk" }
 libc = "0.2"
 cfg-if = "1.0.0"
+rand = "0.7.3"
 
 [lib]
 crate-type = ["cdylib", "rlib", "staticlib"]

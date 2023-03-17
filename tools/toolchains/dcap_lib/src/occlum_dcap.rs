@@ -172,7 +172,7 @@ impl GETKEY {
     }
 }
 
-pub fn get_key(report: *const sgx_report_body_t) -> sgx_key_128bit_t {
+pub fn get_key(report: *const sgx_report_body_t, key_policy: u16) -> sgx_key_128bit_t {
     let mut get_key = GETKEY::new();
 
     let attribute_mask = sgx_attributes_t {
@@ -183,7 +183,11 @@ pub fn get_key(report: *const sgx_report_body_t) -> sgx_key_128bit_t {
     let key_id = sgx_key_id_t {
         id: [0u8; SGX_KEYID_SIZE],
     };
-    let key_policy: u16 = SGX_KEYPOLICY_MRENCLAVE;
+    let key_policy: u16 = match key_policy {
+        1u16 => SGX_KEYPOLICY_MRENCLAVE,
+        _ => SGX_KEYPOLICY_MRSIGNER
+    };
+
     let mut key_request = sgx_key_request_t {
         key_name: SGX_KEYSELECT_SEAL,
         key_policy,

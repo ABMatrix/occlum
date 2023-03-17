@@ -141,7 +141,7 @@ pub fn get_fingerprint() -> sgx_key_128bit_t {
     dcap_demo.dcap_quote_gen().unwrap();
     let report = dcap_demo.dcap_quote_get_report_body().unwrap();
 
-    get_key(report)
+    get_key(report,2u16)
 }
 
 fn main() {

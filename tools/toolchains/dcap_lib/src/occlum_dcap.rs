@@ -206,7 +206,7 @@ pub fn get_key(report: *const sgx_report_body_t, key_policy: u16) -> sgx_key_128
     key
 }
 
-pub fn get_key_with_setting(report: *const sgx_report_body_t, key_policy: u16, key_name: u16) -> sgx_key_128bit_t {
+pub fn get_key_with_setting(report: *const sgx_report_body_t, key_name: u16, key_policy: u16) -> sgx_key_128bit_t {
     let mut get_key = GETKEY::new();
 
     let attribute_mask = sgx_attributes_t {
@@ -218,6 +218,15 @@ pub fn get_key_with_setting(report: *const sgx_report_body_t, key_policy: u16, k
         id: [0u8; SGX_KEYID_SIZE],
     };
 
+    let key_name: u16 = match key_name {
+        0u16 => SGX_KEYSELECT_LICENSE,
+        1u16 => SGX_KEYSELECT_PROVISION,
+        2u16 => SGX_KEYSELECT_PROVISION_SEAL,
+        3u16 => SGX_KEYSELECT_REPORT,
+        4u16 => SGX_KEYSELECT_SEAL,
+        _ => SGX_KEYSELECT_SEAL,
+    };
+
     let key_policy: u16 = match key_policy {
         1u16 => SGX_KEYPOLICY_MRENCLAVE,
         2u16 => SGX_KEYPOLICY_MRSIGNER,
@@ -226,16 +235,6 @@ pub fn get_key_with_setting(report: *const sgx_report_body_t, key_policy: u16, k
         10u16 => SGX_KEYPOLICY_ISVFAMILYID,
         20u16 => SGX_KEYPOLICY_ISVEXTPRODID,
         _ => SGX_KEYPOLICY_MRENCLAVE,
-    };
-
-    let key_name: u16 = match key_name {
-        0u16 => SGX_KEYSELECT_LICENSE,
-        1u16 => SGX_KEYSELECT_PROVISION,
-        2u16 => SGX_KEYSELECT_PROVISION_SEAL,
-        3u16 => SGX_KEYSELECT_REPORT,
-        4u16 => SGX_KEYSELECT_SEAL,
-        _ => SGX_KEYSELECT_SEAL,
-
     };
 
     let mut key_request = sgx_key_request_t {
@@ -251,6 +250,10 @@ pub fn get_key_with_setting(report: *const sgx_report_body_t, key_policy: u16, k
         reserved2: [0u8; SGX_KEY_REQUEST_RESERVED2_BYTES],
     };
 
-    let key = get_key.get_key(&mut key_request).unwrap();
-    key
+    let key = get_key.get_key(&mut key_request);
+    if key.is_ok(){
+        key.unwrap()
+    }else {
+        sgx_key_128bit_t::default()
+    }
 }

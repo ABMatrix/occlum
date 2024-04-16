@@ -251,6 +251,7 @@ pub fn get_key_with_setting(report: *const sgx_report_body_t, key_name: u16, key
     };
 
     let key = get_key.get_key(&mut key_request);
+    println!("====get_key_with_setting====");
     if key.is_ok(){
         key.unwrap()
     }else {

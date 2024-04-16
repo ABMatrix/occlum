@@ -84,7 +84,8 @@ dependencies = [
 
 [[package]]
 name = "sgx_types"
-version = "1.1.5"
+version = "1.1.6"
+source = "git+https://github.com/occlum/incubator-teaclave-sgx-sdk#81384ce4d10c67eea5e1ba4ea332087940c1836b"
 
 [[package]]
 name = "wasi"

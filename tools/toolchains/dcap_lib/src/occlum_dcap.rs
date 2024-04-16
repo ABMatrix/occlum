@@ -1,5 +1,6 @@
 use crate::prelude::*;
 use std::ffi::CString;
+use sgx_types::{SGX_KEYPOLICY_CONFIGID, SGX_KEYPOLICY_ISVEXTPRODID, SGX_KEYPOLICY_ISVFAMILYID, SGX_KEYPOLICY_NOISVPRODID, SGX_KEYSELECT_LICENSE, SGX_KEYSELECT_PROVISION, SGX_KEYSELECT_PROVISION_SEAL, SGX_KEYSELECT_REPORT};
 
 const SGXIOC_GET_DCAP_QUOTE_SIZE: u64 = 0x80047307;
 const SGXIOC_GEN_DCAP_QUOTE: u64 = 0xc0187308;
@@ -190,6 +191,55 @@ pub fn get_key(report: *const sgx_report_body_t, key_policy: u16) -> sgx_key_128
 
     let mut key_request = sgx_key_request_t {
         key_name: SGX_KEYSELECT_SEAL,
+        key_policy,
+        isv_svn: 0u16,
+        reserved1: 0u16,
+        cpu_svn: unsafe { (*report).cpu_svn },
+        attribute_mask,
+        key_id,
+        misc_mask: TSEAL_DEFAULT_MISCMASK,
+        config_svn: 0u16,
+        reserved2: [0u8; SGX_KEY_REQUEST_RESERVED2_BYTES],
+    };
+
+    let key = get_key.get_key(&mut key_request).unwrap();
+    key
+}
+
+pub fn get_key_with_setting(report: *const sgx_report_body_t, key_policy: u16, key_name: u16) -> sgx_key_128bit_t {
+    let mut get_key = GETKEY::new();
+
+    let attribute_mask = sgx_attributes_t {
+        flags: TSEAL_DEFAULT_FLAGSMASK,
+        xfrm: 0,
+    };
+    // hack the key_id
+    let key_id = sgx_key_id_t {
+        id: [0u8; SGX_KEYID_SIZE],
+    };
+
+    let key_policy: u16 = match key_policy {
+        1u16 => SGX_KEYPOLICY_MRENCLAVE,
+        2u16 => SGX_KEYPOLICY_MRSIGNER,
+        4u16 => SGX_KEYPOLICY_NOISVPRODID,
+        8u16 => SGX_KEYPOLICY_CONFIGID,
+        10u16 => SGX_KEYPOLICY_ISVFAMILYID,
+        20u16 => SGX_KEYPOLICY_ISVEXTPRODID,
+        _ => SGX_KEYPOLICY_MRENCLAVE,
+    };
+
+    let key_name: u16 = match key_name {
+        0u16 => SGX_KEYSELECT_LICENSE,
+        1u16 => SGX_KEYSELECT_PROVISION,
+        2u16 => SGX_KEYSELECT_PROVISION_SEAL,
+        3u16 => SGX_KEYSELECT_REPORT,
+        4u16 => SGX_KEYSELECT_SEAL,
+        _ => SGX_KEYSELECT_SEAL,
+
+    };
+
+    let mut key_request = sgx_key_request_t {
+        key_name,
         key_policy,
         isv_svn: 0u16,
         reserved1: 0u16,

@@ -8,5 +8,5 @@ pub use sgx_types::{
     sgx_quote_t, sgx_report_body_t, sgx_report_data_t, sgx_report_t, sgx_spid_t, sgx_target_info_t,
     uint16_t, uint8_t, SGX_KEYID_SIZE, SGX_KEYPOLICY_MRENCLAVE, SGX_KEYPOLICY_MRSIGNER,
     SGX_KEYSELECT_SEAL, SGX_KEY_REQUEST_RESERVED2_BYTES, TSEAL_DEFAULT_FLAGSMASK,
-    TSEAL_DEFAULT_MISCMASK,
+    TSEAL_DEFAULT_MISCMASK, MISC_NON_SECURITY_BITS
 };

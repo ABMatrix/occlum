@@ -256,7 +256,7 @@ pub fn get_key_with_setting(report: *const sgx_report_body_t, key_name: u16, key
         cpu_svn: unsafe { (*report).cpu_svn },
         attribute_mask,
         key_id,
-        misc_mask: TSEAL_DEFAULT_MISCMASK,
+        misc_mask: MISC_NON_SECURITY_BITS,
         config_svn: 0u16,
         reserved2: [0u8; SGX_KEY_REQUEST_RESERVED2_BYTES],
     };

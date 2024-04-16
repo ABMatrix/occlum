@@ -218,6 +218,10 @@ pub fn get_key_with_setting(report: *const sgx_report_body_t, key_name: u16, key
             flags: FLAGS_NON_SECURITY_BITS,
             xfrm: 0,
         },
+        _ => sgx_attributes_t {
+            flags: TSEAL_DEFAULT_FLAGSMASK,
+            xfrm: 0,
+        },
     };
 
     // hack the key_id

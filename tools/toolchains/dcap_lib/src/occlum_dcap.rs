@@ -1,6 +1,6 @@
 use crate::prelude::*;
 use std::ffi::CString;
-use sgx_types::{SGX_KEYPOLICY_CONFIGID, SGX_KEYPOLICY_ISVEXTPRODID, SGX_KEYPOLICY_ISVFAMILYID, SGX_KEYPOLICY_NOISVPRODID, SGX_KEYSELECT_LICENSE, SGX_KEYSELECT_PROVISION, SGX_KEYSELECT_PROVISION_SEAL, SGX_KEYSELECT_REPORT};
+use sgx_types::{FLAGS_NON_SECURITY_BITS, SGX_KEYPOLICY_CONFIGID, SGX_KEYPOLICY_ISVEXTPRODID, SGX_KEYPOLICY_ISVFAMILYID, SGX_KEYPOLICY_NOISVPRODID, SGX_KEYSELECT_LICENSE, SGX_KEYSELECT_PROVISION, SGX_KEYSELECT_PROVISION_SEAL, SGX_KEYSELECT_REPORT};
 
 const SGXIOC_GET_DCAP_QUOTE_SIZE: u64 = 0x80047307;
 const SGXIOC_GEN_DCAP_QUOTE: u64 = 0xc0187308;
@@ -206,13 +206,20 @@ pub fn get_key(report: *const sgx_report_body_t, key_policy: u16) -> sgx_key_128
     key
 }
 
-pub fn get_key_with_setting(report: *const sgx_report_body_t, key_name: u16, key_policy: u16) -> sgx_key_128bit_t {
+pub fn get_key_with_setting(report: *const sgx_report_body_t, key_name: u16, key_policy: u16, flag: u16) -> sgx_key_128bit_t {
     let mut get_key = GETKEY::new();
 
-    let attribute_mask = sgx_attributes_t {
-        flags: TSEAL_DEFAULT_FLAGSMASK,
-        xfrm: 0,
+    let attribute_mask = match flag {
+         0 => sgx_attributes_t {
+            flags: TSEAL_DEFAULT_FLAGSMASK,
+            xfrm: 0,
+        },
+        1 => sgx_attributes_t {
+            flags: FLAGS_NON_SECURITY_BITS,
+            xfrm: 0,
+        },
     };
+
     // hack the key_id
     let key_id = sgx_key_id_t {
         id: [0u8; SGX_KEYID_SIZE],
